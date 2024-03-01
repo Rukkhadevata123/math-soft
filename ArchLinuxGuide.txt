@@ -1,0 +1,416 @@
+双系统指导（UEFI+GPT）（建议关闭Bitlocker）（可以使用独显直连）
+
+如果使用 BitLocker 加密 Windows 且将密钥保存在 TPM 内以便启动时自动解锁，则一旦禁用安全启动，Windows 将无法启动，并显示 BitLocker 恢复屏幕。虽然如此，该问题并不永久，只要再次启用安全启动即可再次启动 Windows。
+如果使用的是 Windows 11，在安装后禁用安全启动不会导致问题，只要TPM正常工作即可。
+
+参考链接：(学会阅读官方wiki可以解决大部分问题)
+https://wiki.archlinuxcn.org/wiki/%E9%A6%96%E9%A1%B5
+https://archlinuxstudio.github.io/ArchLinuxTutorial/#/
+https://arch.icekylin.online/guide/
+https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
+
+输入的命令将使用引号标注
+一、下载安装镜像（Archlinux 每月 1 日释出新的安装镜像，请确保镜像为最新版本）
+    https://archlinux.org/download/
+二、使用Ventoy引导镜像
+    https://www.ventoy.net/cn/doc_start.html
+三、关闭主板BIOS设置中的 Secure Boot
+    在类似名为 security 的选项卡中，找到一项名为 Secure Boot(名称可能略有差异)的选项，选择 Disable 将其禁用。
+四、调整启动方式为 UEFI
+    在某些旧的主板里，需要调整启动模式为 UEFI,而非传统的 BIOS/CSM。在类似名为 boot 的选项卡中，找到类似名为 Boot Mode 的选项，确保将其调整为 UEFI only，而非 legacy/CSM。
+进入安装界面
+五、禁用 reflector
+    reflector 会为你选择速度合适的镜像源，但其结果并不准确，同时会清空配置文件中的内容，对于新人来讲并不适用，我们首先对其进行禁用。
+    "systemctl stop reflector.service"
+六、再次确保是否为 UEFI 模式
+    "ls /sys/firmware/efi/efivars"
+    若输出了一堆东西，即 efi 变量，则说明已在 UEFI 模式。否则请确认你的启动方式是否为 UEFI。
+七、连接网络
+    "iwctl"                           #执行iwctl命令，进入交互式命令行
+    "device list"                     #列出设备名，比如无线网卡看到叫 wlan0
+    "station wlan0 scan"              #扫描网络
+    "station wlan0 get-networks"      #列出网络 比如想连接YOUR-WIRELESS-NAME这个无线
+    "station wlan0 connect YOUR-WIRELESS-NAME" #进行连接 输入密码即可
+    "exit"                            #成功后exit退出
+    测试网络是否连通
+    "ping www.bilibili.com"
+八、更新系统时钟
+    "timedatectl set-ntp true"    #将系统时间与网络时间进行同步
+    "timedatectl status"          #检查服务状态
+九、更换国内软件仓库镜像源加快下载速度
+    "vim /etc/pacman.d/mirrorlist"
+    放在最上面的是会使用的软件仓库镜像源，推荐的镜像源如下：
+    Server = https://mirrors.ustc.edu.cn/archlinux/$repo/os/$arch # 中国科学技术大学开源镜像站
+    Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch # 清华大学开源软件镜像站
+    Server = https://repo.huaweicloud.com/archlinux/$repo/os/$arch # 华为开源镜像站
+    Server = http://mirror.lzu.edu.cn/archlinux/$repo/os/$arch # 兰州大学开源镜像站
+
+    退出vim,刷新软件包并导入密钥
+    "pacman -Sy"
+    "pacman -S archlinux-keyring"
+十、分区和格式化（使用ext4文件系统）
+    确认分区方案：
+    EFI系统分区：500M
+    交换分区（Swap分区）：等于电脑自身物理内存（比如16G）
+    根目录分区：剩余全部空间
+
+    转换为GPT磁盘
+    "lsblk"                       #显示分区情况 找到你想安装的磁盘名称
+    "parted /dev/sdx"             #执行parted，进入交互式命令行，进行磁盘类型变更
+    "(parted)mktable"             #输入mktable
+    "New disk label type? gpt"    #输入gpt 将磁盘类型转换为gpt 如磁盘有数据会警告，输入yes即可
+    "quit"                        #最后quit退出parted命令行交互
+
+    接下来使用 cfdisk 命令对磁盘分区。进入 cfdisk 后的操作很直观，用键盘的方向键、Tab 键、回车键配合即可操作分配各个分区的大小与格式。一般建议将 EFI 分区设置为磁盘的第一个分区，据说有些主板如果不将 EFI 设置为第一个分区，可能有不兼容的问题。其中 EFI 分区选择EFI System类型，根目录分区选择Linux filesystem类型，交换分区选择Linux Swap类型。
+    记得只有写入了操作分区表才会更改，操作完进行写入(Write操作)
+
+    分区时，使用
+    "fdisk -l"                     #查看磁盘情况
+    "cfdisk /dev/sdx"              #来执行分区操作,分配各个分区大小，类型
+    "fdisk -l"                     #分区结束后， 复查磁盘情况
+
+    建立好分区后，需要对分区用合适的文件系统进行格式化。这里用mkfs.ext4命令格式化根分区与 home 分区，用mkfs.vfat命令格式化 EFI 分区。如下命令中的 sdax 中，x 代表分区的序号。格式化命令要与上一步分区中生成的分区名字对应才可以。
+    磁盘若事先有数据，会提示你: 'proceed any way?' 按 y 回车继续即可。
+    "mkfs.ext4  /dev/sdax"            #格式化根目录（和home目录）的分区
+    "mkfs.vfat  /dev/sdax"            #格式化efi分区
+    （"mkfs.fat -F32 /dev/sdxn"）      #格式化efi分区（另一种方式）
+
+    初始化 Swap 分区
+    "mkswap /dev/sdxn"
+十一、挂载分区
+
+    典型挂载点（摘自wiki：https://wiki.archlinuxcn.org/wiki/EFI_%E7%B3%BB%E7%BB%9F%E5%88%86%E5%8C%BA#%E5%85%B8%E5%9E%8B%E6%8C%82%E8%BD%BD%E7%82%B9）
+    有三种挂载EFI系统分区的典型情况：
+
+    挂载 EFI系统分区 到 /boot：
+    便于系统维护和管理，/boot是微码包安装CPU微码initramfs文件和mkinitcpio安装内核与initramfs镜像的默认位置。
+    FAT在挂载时设置了全局属性，这会阻止设置文件特定的权限和拓展属性
+    通常安装在/boot中的文件与EFI相关文件共享EFI系统分区，提高了EFI系统分区的大小需求
+    双启动的情况下，系统特定的启动文件会处在被其它系统修改操作的潜在危险中
+    无法加密/boot，因为固件需要读取EFI相关文件
+
+    挂载 EFI系统分区到/efi：
+    当EFI系统分区包含其他系统的文件时最好和操作系统相关的文件分开，这确保了操作系统相关和EFI相关文件的分离。
+    只有EFI二进制文件（引导加载程序（和可选驱动））和（或）统一内核镜像会安装在EFI系统分区，避免了安装在/boot中的文件对EFI系统分区的大小需求，节约了EFI系统分区的空间。
+    允许保留/boot中文件的Linux特定的文件系统权限，避免了FAT的限制。
+    允许根据需求单独挂载EFI系统分区，例如需要升级引导加载程序时。
+    如果加密整个系统并且配置恰当，除少数需要文件没有被加密，/boot中的文件能够被加密保护：内核及其他文件储存在加密分区，统一内核镜像（英语：unified kernel image）或引导加载程序通过相应的文件系统驱动来访问这些文件。
+
+    挂载 EFI系统分区到/efi， 然后再挂载一个“拓展引导加载器分区”（XBOOTLDR）分区到 /boot。在以前创建的 ESP 太小而无法容纳多个引导加载程序以及内核但 ESP 又无法轻松调整大小时（例如在 Windows 之后将 Linux 安装到 双引导（多引导） 时），这可能非常有用。至少在 systemd-boot#使用XBOOTLDR安装 时支持此方法。
+
+    注意：
+    /efi是/boot/efi的替代挂载点[5]，/boot/efi在过去被使用但现在不推荐。
+    /efi在安装一开始时不存在，需要先用 mkdir(1) 创建再挂载EFI系统分区到该目录。
+
+    在挂载时，挂载是有顺序的，先挂载根分区，再挂载 EFI 分区。 这里的 sdax 只是例子，具体根据你自身的实际分区情况来。
+    "mount /dev/sda1  /mnt"
+    "mkdir /mnt/efi"     #创建efi目录
+    "mount /dev/sda2 /mnt/efi"
+    （"mkdir /mnt/home"    #创建home目录）
+    （"mount /dev/sda3 /mnt/home"）
+
+    "swapon /dev/sda2" #启用swap分区
+
+    使用 df 命令复查挂载情况：
+    "df -h"
+
+    使用 free 命令复查 Swap 分区挂载情况：
+    "free -h" # -h 选项会使输出以人类可读的单位显示
+十二、安装系统（不用担心打错词，打错任何一个都不会进行安装）
+    "pacstrap /mnt base base-devel linux linux-firmware linux-headers networkmanager nano vim（两个文本编辑器）grub os-prober efibootmgr（三个跟引导有关的软件）ntfs-3g（自动挂载Windows分区）amd/intel-ucode（看CPU情况）bluez bluez-utils（两个蓝牙相关）dhcpcd（有线连接，可以不选，networkmanager可以代替） bash-completion zsh zsh-completions sudo fish（可选的bash替代）"
+
+    linux、linux-headers是指内核，linux[标准内核]，linux-lts[长期支持内核]，linux-zen[高性能内核]
+    如果使用其他内核，请安装对应的头文件。如linux-zen和linux-zen-headers
+    这里推荐标准内核，进入系统可以更换内核
+
+    如果提示 GPG 证书错误，可能是因为使用的不是最新的镜像文件，可以通过更新 archlinux-keyring 解决此问题
+    "pacman -S archlinux-keyring"
+十三、生成 fstab 文件
+    fstab 用来定义磁盘分区。它是 Linux 系统中重要的文件之一。使用 genfstab 自动根据当前挂载情况生成并写入 fstab 文件：
+    "genfstab -U /mnt >> /mnt/etc/fstab"
+
+    复查一下 /mnt/etc/fstab 确保没有错误：
+    "cat /mnt/etc/fstab"
+十四、切换到新系统
+    "arch-chroot /mnt"
+十五、时区设置
+    设置时区，在/etc/localtime 下用/usr 中合适的时区创建符号连接。如下设置上海时区。
+    "ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime"
+
+    随后进行硬件时间设置，将当前的正确 UTC 时间写入硬件时间。
+    "hwclock --systohc"
+十六、设置 Locale 进行本地化
+    Locale 决定了地域、货币、时区日期的格式、字符排列方式和其他本地化标准。
+    首先使用 vim 编辑 /etc/locale.gen，去掉 en_US.UTF-8 所在行以及 zh_CN.UTF-8 所在行的注释符号（#）。这里需要使用 vim 的寻找以及编辑功能，如果你忘记了，请复习 vim 的操作。
+    "vim /etc/locale.gen"
+
+    然后使用如下命令生成 locale。
+    "locale-gen"
+
+    最后向 /etc/locale.conf 导入内容
+    "echo 'LANG=en_US.UTF-8'  > /etc/locale.conf"
+
+    注：如果需要设置中文（不推荐），请在进入系统桌面后手动编辑/etc/locale.conf文件，并输入如下内容
+    LANG=en_US.UTF-8
+    LANG=zh_CN.UTF-8
+    LC_CTYPE="zh_CN.UTF-8"
+    LC_NUMERIC="zh_CN.UTF-8"
+    LC_TIME="zh_CN.UTF-8"
+    LC_COLLATE="zh_CN.UTF-8"
+    LC_MONETARY="zh_CN.UTF-8"
+    LC_MESSAGES="zh_CN.UTF-8"
+    export LC_ALL="zh_CN.UTF-8"
+
+    参见“简体中文本地化wiki”：
+    https://wiki.archlinuxcn.org/wiki/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%E6%9C%AC%E5%9C%B0%E5%8C%96#
+
+十七、设置主机名
+    首先在/etc/hostname设置主机名
+    "vim /etc/hostname"
+    加入你想为主机取的主机名，这里比如叫 myarch。
+
+    接下来在/etc/hosts设置与其匹配的条目。
+    "vim /etc/hosts"
+
+    加入如下内容
+    127.0.0.1   localhost
+    ::1         localhost
+    127.0.1.1   myarch
+十八、为 root 用户设置密码
+    "passwd root"
+十九、创建普通用户
+    "useradd -m -G wheel [用户名]"
+
+    为用户创建密码：
+    "passwd [用户名]"
+
+    编辑sudoers赋予用户root权限
+    "vim /etc/sudoers"
+    [删除%wheel ALL=(ALL:ALL) ALL前的“#”]
+二十、启动必要服务（enable（开机启用，start（启用））enable --now立即启动某服务并设置开机启动
+    "systemctl enable NetworkManager"（网络服务）
+    "systemctl enable bluetooth"（蓝牙服务）
+二十一、双系统引导
+    "grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=ARCH --removable"
+    "vim /etc/default/grub"
+
+    进入编辑界面
+    去掉 GRUB_CMDLINE_LINUX_DEFAULT 一行中最后的 quiet 参数
+    为了引导windows，则还需要添加新的一行
+    GRUB_DISABLE_OS_PROBER=false
+    或者在最后一行去掉GRUB_DISABLE_OS_PROBER=false前的"#"
+
+    更新grub引导
+    "grub-mkconfig -o /boot/grub/grub.cfg"
+
+    若 win10 安装在另一个硬盘中则不会输出 可在进入系统后挂载硬盘并重新执行该命令
+二十二、安装桌面环境（KDE）
+    "pacman -S xorg plasma plasma-wayland-session kde-applications"
+    "pacman -S sddm"
+    "systemctl enable sddm.service"
+    （"systemctl enable sddm"）
+二十三、完成安装
+    "exit" # 退回安装环境
+    "umount -R /mnt" # 卸载新分区
+    "reboot" # 重启
+二十四、恢复windows引导
+    进入新系统
+    nvidia显卡用户请务必选择X11桌面环境！
+    打开终端输入
+    "sudo grub-mkconfig -o /boot/grub/grub.cfg"
+    增加windows引导
+二十五、配置镜像源
+    "sudo vim /etc/pacman.conf"
+    添加以下内容（并防止密钥错误）
+    [archlinuxcn]
+    SigLevel = Optional TrustAll
+    Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch（清华源）
+   或
+    Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch（中科大源）
+   或
+    Server = https://repo.huaweicloud.com/archlinux/$repo/os/$arch（华为源）
+   等
+
+   开启32位支持库
+   去掉[multilib]及下一行前的“#”，一共去掉了两个"#"
+
+    刷新软件包并导入密钥
+    "sudo pacman -Sy"
+    "sudo pacman -S archlinux-keyring"
+    "sudo pacman -S archlinuxcn-keyring"
+
+    更新系统
+    "sudo pacman -Syu"
+
+    重启
+二十六、初始化KDE商店
+    "sudo pacman -S appstream-qt appstream archlinux-appstream-data packagekit-qt5 fwupd"
+二十七、安装基本、常用软件（如果遇到网络连接问题，请在后文启用全局代理再进行尝试）
+    "sudo pacman -S sof-firmware alsa-firmware alsa-ucm-conf" # 声音固件
+    "sudo pacman -S wget"
+    "sudo pacman -S firewalld" #防火墙配置
+    "sudo pacman -S adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts noto-fonts-cjk wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-jetbrains-mono-nerd ttf-arphic-uming" # 安装几个开源中文字体。一般装上文泉驿就能解决大多 wine 应用中文方块的问题
+    "sudo pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra" # 安装谷歌开源字体及表情
+    "sudo pacman -S firefox chromium google-chrome" # 安装常用的火狐、chromium（可选）、谷歌浏览器
+    "sudo pacman -S yay" #AUR助手
+    "yay -S octopi" #图形化软件包管理器
+    "sudo pacman -S latte-dock" #美化Dock栏
+    "sudo pacman -S sshfs" #自动挂载KDE Connect手机分区
+    "yay -S kholidays5-cn" #节假日插件
+    "sudo pacman -S libreoffice-still libreoffice-still-zh-cn" #办公软件（如需使用尝鲜版，把still改成fresh即可）
+    "yay -S onlyoffice-bin" #可选的办公套件
+    "yay -S youdao-dict" #安装翻译软件
+    "yay -S p7zip-gui" #类似于7-zip
+    "sudo pacman -S motrix" #下载工具
+    "yay -S dropbox" #dropbox网盘
+    "yay -S linuxqq" #安装QQ
+    "yay -S microsoft-edge-stable" #Edge浏览器
+    "sudo pacman -S kio-admin" #添加右键菜单”以管理员身份运行“
+    "sudo pacman -S gparted" #分区工具
+    "yay -S bluez-obex" #蓝牙文件传输服务
+    注：以下可能遇到网络问题
+    "sudo pacman -S python-pip" #python的pip安装器
+    "yay -S dh-autoreconf"
+    "sudo pacman -S git openssh openssl"
+    "sudo pacman -S timeshift" #安装备份还原工具
+    "sudo pacman -S neofetch lolcat"
+    "yay -S rar"
+    尝试在终端输入
+    "neofetch | lolcat"
+    "sudo pacman -S blender" #Blender 是一款开源免费的三维图形图像软件，提供从建模、动画、材质、渲染、到音频处理、视频剪辑等一系列动画短片制作解决方案。
+    "sudo pacman -S musescore" #MuseScore 是 Muse Group 开发的一个跨平台的自由开源制谱软件。
+    "yay -S com.qq.weixin.spark" #安装微信
+    "yay -S obs-studio-browser" #有浏览器插件集成的 OBS Studio。编译要很久（大约 15 min）
+    "yay -S obs-nvfbc-git" #如果想进一步优化直播或录制性能，可以安装此仓库中的 NvFBC 显卡驱动补丁，再安装OBS NvFBC 插件aur，然后使用 NvFBC 来源即可。
+    "yay -S listen1-desktop-appimage yesplaymusic qqmusic-electron" #几个在线音乐软件
+    "yay -S feeluown feeluown-local feeluown-netease feeluown-qqmusic feeluown-kuwo feeluown-bilibili" #在线音乐软件的插件
+    "sudo pacman -S steam" #Steam游戏平台
+    "yay -S protonup-qt" #运行windows游戏
+    "sudo pacman -S meson systemd git dbus libinih gamemode lib32-gamemode" #安装游戏模式，配置请参见https://wiki.archlinuxcn.org/wiki/Gamemode
+    " yay -S visual-studio-code-bin" #安装vscode
+    "yay -S appimagelauncher" #安装appimage相关
+    "sudo pacman -S jdk17-openjdk" #安装java
+    "yay -S prismlauncher" #安装Minecraft启动器
+    VirtualBox相关：请参考https://wiki.archlinuxcn.org/wiki/VirtualBox
+    vmware相关:请参考https://wiki.archlinuxcn.org/wiki/VMware
+    "sudo pacman -S wine wine-mono wine_gecko wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls \
+    mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error \
+    lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo \
+    sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama \
+    ncurses lib32-ncurses opencl-icd-loader lib32-opencl-icd-loader libxslt lib32-libxslt libva lib32-libva gtk3 \
+    lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader" #安装wine（Wine 是类 UNIX 系统下运行 Windows 程序的“兼容层”，是正在持续开发中的自由软件。在 Wine 中运行的 Windows 程序，就如同运行原生 Linux 程序一样，不会有模拟器那样的严重性能问题。）
+    （"sudo pacman -S wine-gecko wine-mono wine-nine wine-staging winetricks") #建议运行上面一条指令而不是这条指令来安装wine
+
+    wiki关于游戏的介绍：https://wiki.archlinuxcn.org/wiki/%E6%B8%B8%E6%88%8F
+
+二十九、安装输入法https://wiki.archlinuxcn.org/wiki/Fcitx5
+    "sudo pacman -S fcitx5-im" # 输入法基础包组
+    "sudo pacman -S fcitx5-chinese-addons" # 官方中文输入引擎
+    "sudo pacman -S fcitx5-rime" # Rime输入引擎
+    "yay fcitx5-pinyin-moegirl" # 萌娘百科词库。二刺猿必备（archlinuxcn）
+    "sudo pacman -S fcitx5-material-color" # 输入法主题
+    "sudo pacman -S fcitx5-pinyin-zhwiki" #中文维基百科词库
+    "yay -S fcitx5-input-support"
+
+    "sudo vim /etc/environment"
+    添加如下内容，保存退出，重启
+    GTK_IM_MODULE=fcitx
+    QT_IM_MODULE=fcitx
+    XMODIFIERS=@im=fcitx
+    SDL_IM_MODULE=fcitx
+    GLFW_IM_MODULE=ibus
+三十、配置打印机和共享服务
+    "sudo pacman -S hplip"
+    "sudo pacman -S cups"
+    "sudo systemctl enable --now cups.service"
+    "sudo pacman -S system-config-printer"
+
+    https://wiki.archlinuxcn.org/wiki/Samba
+三十一、科学上网，全局代理
+    "yay -S v2ray v2raya"
+    "sudo systemctl enable --now v2raya"
+    https://github.com/hwanz/SSR-V2ray-Trojan
+    请在bing上搜索github 机场
+三十二、更换内核，安装显卡驱动https://github.com/lutris/docs/blob/master/InstallingDrivers.md
+    更新系统
+    "yay -Syu"
+    安装高性能内核
+    "sudo pacman -S linux-zen linux-zen-headers"
+    Nvidia：
+    "sudo pacman -S --needed nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings vulkan-icd-loader lib32-vulkan-icd-loader"
+    "sudo pacman -S cuda cuda-tools" #安装cuda
+    "sudo nvidia-xconfig" #可选，生成配置文件
+    "sudo pacman -S glmark2" #可选，显卡跑分软件
+    "yay -S lib32-vkd3d vkd3d dxvk-bin" #可选，也许跟wine有关
+
+    AMD：
+    "sudo pacman -S --needed lib32-mesa vulkan-radeon lib32-vulkan-radeon vulkan-icd-loader lib32-vulkan-icd-loader"
+
+    Intel:
+    "sudo pacman -S --needed lib32-mesa vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader"
+
+    "sudo grub-mkconfig -o /boot/grub/grub.cfg" #保险起见，请务必再次生成grub配置文件
+
+    重启，之后可以在设置里调整屏幕刷新率，分辨率等等
+三十三、必要配置
+    以空会话启动
+    默认情况下，KDE 桌面环境中关机之后再开机会恢复先前保存的对话（如浏览器没有关掉，那么开机之后浏览器还在）。
+    如果你不喜欢这样，请按照以下步骤设置：
+    打开 系统设置 > 点击侧栏 开机与关机 > 桌面会话
+    将 登入时 的选项改为 以空会话启动
+    点击 应用 保存设置
+
+    点击文件 / 文件夹行为
+    默认情况下，KDE 桌面环境中打开文件 / 文件夹是单击，若不习惯常常造成误触发。
+    若希望改为双击打开文件 / 文件夹（类似 win10），请按照以下步骤设置：
+    打开 系统设置 > 点击侧栏 工作区行为 > 常规行为
+    将 点击文件或文件夹时 的选项改为 选中它们
+    点击 应用 保存设置
+
+    安装 Windows 字体
+    "yay -S ttf-ms-fonts"
+    或者
+    进入 Windows 的 Fonts 文件夹，将字体复制到建立的文件夹并设置合理的权限：
+    "cd /path/to/C:/Windows/Fonts" # 或者通过 Dolphin 在此文件夹下右键 > 点击 打开终端
+    "sudo cp ./* /usr/share/fonts/WindowsFonts"
+    "sudo chmod 755 /usr/share/fonts/WindowsFonts/*" # 设置合理的权限
+    "fc-cache -vf" # -v：显示过程
+
+    调整双系统时间：https://wiki.archlinuxcn.org/wiki/%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4#Windows_%E7%B3%BB%E7%BB%9F%E4%BD%BF%E7%94%A8_UTC
+
+三十四、更换shell（可选）
+    "chsh -s /usr/bin/zsh" # 修改当前账户的默认 Shell为zsh
+    "chsh -s /usr/bin/fish" # 修改当前账户的默认 Shell为fish
+
+    对于root用户：
+    "sudo chsh -s /usr/bin/zsh root"
+
+    重启
+三十五、更新系统并重启（每天执行）
+    "yay -Syu"
+    "reboot"
+    定期清理软件包缓存：
+    "yay -Sc"
+    "yay -clean"
+    "sudo pacman -Sc"
+三十六、系统美化
+    请参阅开头参考链接
+    GRUB主题推荐"https://store.kde.org/p/1760905"
+    全局主题推荐"https://store.kde.org/p/1294729"
+关于pacman命令：https://wiki.archlinuxcn.org/wiki/Pacman
+yay别名：alias yays='yay --noconfirm && yay -clean --noconfirm && yay -Sc --noconfirm && sudo pacman -Sc --noconfirm && sudo reboot'
+开机自动挂载windows分区：/etc/fstab添加：UUID=A28C9FD48C9FA179 /run/media/Yoimiya/Data ntfs-3g defaults,uid=1000,gid=1000,windows_names,umask=0000 0 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
