@@ -1,7 +1,15 @@
+/**
+ * @file DigitDrawing.h
+ * @brief 该文件包含了一个简单的像素字体和绘制数字的函数的定义。
+ */
+
 #include <fstream>
 #include <vector>
 #include "BitmapStructures.h"
-// 定义一个简单的像素字体
+
+/**
+ * @brief 一个简单的像素字体，用于表示数字。
+ */
 const std::vector<std::vector<std::string>> DIGITS = {
     {"111", "101", "101", "101", "111"}, // 0
     {"010", "110", "010", "010", "111"}, // 1
@@ -15,6 +23,15 @@ const std::vector<std::vector<std::string>> DIGITS = {
     {"111", "101", "111", "001", "111"}  // 9
 };
 
+/**
+ * @brief 在位图文件中绘制一个数字。
+ * @param file 输出文件流。
+ * @param digit 要绘制的数字。
+ * @param start_x 数字左上角的x坐标。
+ * @param start_y 数字左上角的y坐标。
+ * @param color 数字的颜色。
+ * @param scale 数字的缩放因子。
+ */
 void draw_digit(std::ofstream& file, int digit, int start_x, int start_y, const RGBTRIPLE& color, int scale) {
     for (int y = 0; y < DIGITS[digit].size(); y++) { // 遍历数字的每一行
         for (int x = 0; x < DIGITS[digit][y].size(); x++) { // 遍历数字的每一列

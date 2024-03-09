@@ -1,7 +1,16 @@
+/**
+ * @file MainExecution.cpp
+ * @brief 该文件包含了绘制位图文件中数字的主函数。
+ */
+
 #include "DigitDrawing.h" // 包含绘制数字的头文件
 #include <iostream>
 #include <fstream>
 
+/**
+ * @brief 绘制位图文件中数字的主函数。
+ * @return 如果程序成功运行，则返回0；如果无法打开文件进行写入，则返回1。
+ */
 int main() {
     BITMAPFILEHEADER bfh; // 定义位图文件头变量
     BITMAPINFOHEADER bih; // 定义位图信息头变量
@@ -9,10 +18,11 @@ int main() {
 
     std::ofstream file("output.bmp", std::ios::binary); // 打开输出文件流
     if (!file) { // 如果文件打开失败
-        std::cout << "Could not open file for writing\n"; // 输出错误信息
+        std::cout << "无法打开文件进行写入\n"; // 输出错误信息
         return 1; // 返回错误码
     }
 
+    // 设置位图文件头和位图信息头的各个字段
     bfh.bfType = 0x4D42; // 设置位图文件类型
     bfh.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + 1024 * 768 * sizeof(RGBTRIPLE); // 设置位图文件大小
     bfh.bfReserved1 = 0; // 设置保留字段1
@@ -35,9 +45,11 @@ int main() {
     color.rgbGreen = 255; // 设置绿色分量
     color.rgbRed = 255; // 设置红色分量
 
+    // 写入位图文件头和位图信息头的数据
     file.write(reinterpret_cast<char*>(&bfh), sizeof(bfh)); // 写入位图文件头数据
     file.write(reinterpret_cast<char*>(&bih), sizeof(bih)); // 写入位图信息头数据
 
+    // 填充位图的每个像素
     for (int y = 0; y < bih.biHeight; y++) { // 遍历位图的每一行
         for (int x = 0; x < bih.biWidth; x++) { // 遍历位图的每一列
             file.write(reinterpret_cast<char*>(&color), sizeof(color)); // 写入颜色数据
