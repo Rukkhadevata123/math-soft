@@ -95,7 +95,7 @@ void print_world()
     // system("cls"); // 对于Windows系统
 
     // 输出上边框
-    for (int i = 0; i < 2 * WIDTH + 2; i++)
+    for (int i = 0; i < WIDTH + 2; i++)
     {
         printf("-");
     }
@@ -107,13 +107,13 @@ void print_world()
         printf("|"); // 输出左边框
         for (int j = 0; j < WIDTH; j++)
         {
-            printf("%c%c", world[i][j] ? '*' : ' ', world[i][j] ? '*' : ' ');
+            printf("%c", world[i][j] ? '#' : ' ');
         }
         printf("|\n"); // 输出右边框
     }
 
     // 输出下边框
-    for (int i = 0; i < 2 * WIDTH + 2; i++)
+    for (int i = 0; i < WIDTH + 2; i++)
     {
         printf("-");
     }
@@ -151,9 +151,9 @@ void update()
             }
 
             // 根据生命游戏的规则更新细胞的状态
-            if (world[i][j] && (neighbors == 2 || neighbors == 3))
+            if (world[i][j] && (neighbors < 2 || neighbors > 3))
             {
-                new_world[i][j] = 1;
+                new_world[i][j] = 0;
             }
             else if (!world[i][j] && neighbors == 3)
             {
@@ -161,7 +161,7 @@ void update()
             }
             else
             {
-                new_world[i][j] = 0;
+                new_world[i][j] = world[i][j];
             }
         }
     }

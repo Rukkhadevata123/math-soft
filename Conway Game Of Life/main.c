@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "game_of_life.h"
+#include "game_of_life.c"
 
 int kbhit(void) {
     struct termios oldt, newt;
