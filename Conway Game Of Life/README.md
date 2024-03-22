@@ -86,7 +86,7 @@
 用户需要在命令行中提供一个模式名称作为参数来运行程序。例如，如果用户想要初始化一个 Lightweight Spaceship 模式，他们可以运行以下命令：
 
 ```
-./game_of_life LightweightSpaceship
+./main2 LightweightSpaceship
 ```
 
 在程序运行期间，用户可以按 's' 键来保存当前的世界状态到一个 BMP 文件中。例如，如果用户在运行程序后按 's' 键，程序将会保存当前的世界状态到一个名为 "game_of_life.bmp" 的文件中。
