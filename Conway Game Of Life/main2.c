@@ -135,13 +135,13 @@ void initialize_pattern(const char *pattern_name)
         int center_y = WIDTH / 2;
 
         // 设置Loaf模式的细胞
-        world[center_x - 1][center_y - 1] = 1;
-        world[center_x - 1][center_y] = 1;
-        world[center_x][center_y - 2] = 1;
+        world[center_x - 2][center_y - 1] = 1;
+        world[center_x - 2][center_y] = 1;
+        world[center_x - 1][center_y - 2] = 1;
+        world[center_x - 1][center_y + 1] = 1;
         world[center_x][center_y - 1] = 1;
-        world[center_x + 1][center_y - 1] = 1;
+        world[center_x][center_y + 1] = 1;
         world[center_x + 1][center_y] = 1;
-        world[center_x + 2][center_y - 1] = 1;
     }
     if (strcmp(pattern_name, "Boat") == 0)
     {
@@ -225,26 +225,48 @@ void initialize_pattern(const char *pattern_name)
         world[center_x][center_y - 1] = 1;
         world[center_x][center_y] = 1;
     }
-    if (strcmp(pattern_name, "Pulsar") == 0)
+    if (strcmp(pattern_name, "Pulsar2") == 0)
     {
-        // 初始化 Pulsar 模式
-        // Pulsar 模式是一个13x13的模式，所以我们需要确保世界的宽度和高度至少为13
+        // 初始化 Pulsar2 模式
+        // Pulsar 模式是一个7x7的模式，所以我们需要确保世界的宽度至少为7，高度至少为7
+        if (WIDTH < 7 || HEIGHT < 7)
+        {
+            printf("世界太小，无法初始化 Pulsar 模式\n");
+            return;
+        }
+
+        // Pulsar2 模式的中心位置
+        int center_x = HEIGHT / 2;
+        int center_y = WIDTH / 2;
+
+        // 设置 Pulsar2 模式的细胞
+        world[center_x - 1][center_y] = 1;
+        world[center_x][center_y] = 1;
+        world[center_x + 1][center_y] = 1;
+        world[center_x][center_y - 1] = 1;
+        world[center_x][center_y + 1] = 1;
+    }
+    if (strcmp(pattern_name, "Pulsar3") == 0)
+    {
+        // 初始化 Pulsar3 模式
+        // Pulsar 模式是一个13x13的模式，所以我们需要确保世界的宽度至少为13，高度至少为13
         if (WIDTH < 13 || HEIGHT < 13)
         {
             printf("世界太小，无法初始化 Pulsar 模式\n");
             return;
         }
 
-        // Pulsar 模式的中心位置
+        // Pulsar3 模式的中心位置
         int center_x = HEIGHT / 2;
         int center_y = WIDTH / 2;
 
-        // 设置 Pulsar 模式的细胞
+        // 设置 Pulsar3 模式的细胞
         for (int i = -6; i <= 6; i++)
         {
             for (int j = -6; j <= 6; j++)
             {
-                if ((abs(i) % 6 == 1 || abs(i) % 6 == 4) && (abs(j) % 6 == 1 || abs(j) % 6 == 4))
+                if ((abs(i) == 2 || abs(i) == 3 || abs(i) == 4) && (j == -6 || j == -1 || j == 1 || j == 6) ||
+                    (abs(j) == 2 || abs(j) == 3 || abs(j) == 4) && (i == -6 || i == -1 || i == 1 || i == 6))
                 {
                     world[center_x + i][center_y + j] = 1;
                 }
@@ -254,8 +276,8 @@ void initialize_pattern(const char *pattern_name)
     if (strcmp(pattern_name, "Pentadecathlon") == 0)
     {
         // 初始化 Pentadecathlon 模式
-        // Pentadecathlon 模式是一个8x3的模式，所以我们需要确保世界的宽度至少为8，高度至少为3
-        if (WIDTH < 8 || HEIGHT < 3)
+        // Pentadecathlon 模式是一个10x3的模式，所以我们需要确保世界的宽度至少为10，高度至少为3
+        if (WIDTH < 10 || HEIGHT < 3)
         {
             printf("世界太小，无法初始化 Pentadecathlon 模式\n");
             return;
@@ -266,10 +288,10 @@ void initialize_pattern(const char *pattern_name)
         int center_y = WIDTH / 2;
 
         // 设置 Pentadecathlon 模式的细胞
-        for (int i = -4; i <= 3; i++)
+        for (int i = -4; i <= 5; i++)
         {
             world[center_x][center_y + i] = 1;
-            if (i == -3 || i == 2)
+            if (i == -4 || i == -1 || i == 1 || i == 4)
             {
                 world[center_x - 1][center_y + i] = 1;
                 world[center_x + 1][center_y + i] = 1;
@@ -291,14 +313,15 @@ void initialize_pattern(const char *pattern_name)
         int center_y = WIDTH / 2;
 
         // 设置 Lightweight Spaceship 模式的细胞
-        world[center_x - 1][center_y - 2] = 1;
-        world[center_x - 1][center_y + 2] = 1;
-        world[center_x][center_y - 2] = 1;
-        world[center_x][center_y + 1] = 1;
-        world[center_x + 1][center_y - 2] = 1;
+        world[center_x - 2][center_y] = 1;
+        world[center_x - 2][center_y + 1] = 1;
+        world[center_x - 2][center_y + 2] = 1;
+        world[center_x - 2][center_y + 3] = 1;
+        world[center_x - 1][center_y - 1] = 1;
+        world[center_x - 1][center_y + 3] = 1;
+        world[center_x][center_y + 3] = 1;
         world[center_x + 1][center_y - 1] = 1;
-        world[center_x + 1][center_y] = 1;
-        world[center_x + 1][center_y + 1] = 1;
+        world[center_x + 1][center_y + 2] = 1;
     }
     if (strcmp(pattern_name, "MiddleweightSpaceship") == 0)
     {
@@ -315,15 +338,17 @@ void initialize_pattern(const char *pattern_name)
         int center_y = WIDTH / 2;
 
         // 设置 Middleweight Spaceship 模式的细胞
-        world[center_x - 2][center_y - 2] = 1;
+        world[center_x - 2][center_y] = 1;
+        world[center_x - 2][center_y + 1] = 1;
         world[center_x - 2][center_y + 2] = 1;
-        world[center_x - 1][center_y - 2] = 1;
-        world[center_x - 1][center_y + 1] = 1;
-        world[center_x][center_y - 2] = 1;
-        world[center_x][center_y - 1] = 1;
-        world[center_x][center_y] = 1;
-        world[center_x][center_y + 1] = 1;
-        world[center_x + 1][center_y + 2] = 1;
+        world[center_x - 2][center_y + 3] = 1;
+        world[center_x - 2][center_y + 4] = 1;
+        world[center_x - 1][center_y - 1] = 1;
+        world[center_x - 1][center_y + 4] = 1;
+        world[center_x][center_y + 4] = 1;
+        world[center_x + 1][center_y - 1] = 1;
+        world[center_x + 1][center_y + 3] = 1;
+        world[center_x + 2][center_y + 1] = 1;
     }
     if (strcmp(pattern_name, "HeavyweightSpaceship") == 0)
     {
@@ -340,16 +365,19 @@ void initialize_pattern(const char *pattern_name)
         int center_y = WIDTH / 2;
 
         // 设置 Heavyweight Spaceship 模式的细胞
-        world[center_x - 2][center_y - 3] = 1;
+        world[center_x - 2][center_y] = 1;
+        world[center_x - 2][center_y + 1] = 1;
         world[center_x - 2][center_y + 2] = 1;
-        world[center_x - 1][center_y - 3] = 1;
-        world[center_x - 1][center_y + 1] = 1;
-        world[center_x][center_y - 3] = 1;
-        world[center_x][center_y - 2] = 1;
-        world[center_x][center_y - 1] = 1;
-        world[center_x][center_y] = 1;
-        world[center_x + 1][center_y + 2] = 1;
-        world[center_x + 1][center_y + 3] = 1;
+        world[center_x - 2][center_y + 3] = 1;
+        world[center_x - 2][center_y + 4] = 1;
+        world[center_x - 2][center_y + 5] = 1;
+        world[center_x - 1][center_y - 1] = 1;
+        world[center_x - 1][center_y + 5] = 1;
+        world[center_x][center_y + 5] = 1;
+        world[center_x + 1][center_y - 1] = 1;
+        world[center_x + 1][center_y + 4] = 1;
+        world[center_x + 2][center_y + 1] = 1;
+        world[center_x + 2][center_y + 2] = 1;
     }
 }
 
