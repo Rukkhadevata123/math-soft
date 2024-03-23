@@ -63,6 +63,111 @@ void save_to_bmp(const char *filename) {
     fclose(file);
 }
 
+void load_rle(const char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        printf("无法打开文件 %s\n", filename);
+        return;
+    }
+
+    char line[1024];
+    while (fgets(line, sizeof(line), file))
+    {
+        if (line[0] == '#')
+        {
+            // 忽略注释行
+            continue;
+        }
+        else if (line[0] == 'x')
+        {
+            // 解析宽度和高度
+            int width, height;
+            sscanf(line, "x = %d, y = %d", &width, &height);
+
+            // 重新初始化世界
+            initialize(width, height, 0.0);
+        }
+        else
+        {
+            // 解析模式
+            int x = 0, y = 0;
+            for (char *p = line; *p; p++)
+            {
+                if (*p == 'b')
+                {
+                    x++;
+                }
+                else if (*p == 'o')
+                {
+                    world[y][x] = 1;
+                    x++;
+                }
+                else if (*p == '$')
+                {
+                    y++;
+                    x = 0;
+                }
+            }
+        }
+    }
+
+    fclose(file);
+}
+
+void load_txt(const char *filename)
+{
+    FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        printf("无法打开文件 %s\n", filename);
+        return;
+    }
+
+    // 首先，我们需要确定世界的宽度和高度
+    int width = 0, height = 0;
+    char line[1024];
+    while (fgets(line, sizeof(line), file))
+    {
+        height++;
+        if (strlen(line) > width)
+        {
+            width = strlen(line);
+        }
+    }
+
+    // 重新初始化世界
+    initialize(width, height, 0.0);
+
+    // 重新定位文件指针到文件开始
+    rewind(file);
+
+    // 然后，我们读取每一行，将活细胞添加到世界中
+    int y = 0;
+    while (fgets(line, sizeof(line), file))
+    {
+        for (int x = 0; x < width; x++)
+        {
+            if (line[x] == 'O')
+            {
+                world[y][x] = 1;
+            }
+        }
+        y++;
+    }
+
+    fclose(file);
+}
+
+void convert_rle_to_txt(const char *input_filename, const char *output_filename)
+{
+
+}
+void convert_txt_to_rle(const char *input_filename, const char *output_filename)
+{
+
+}
 // 初始化格子世界的状态
 void initialize(int width, int height, float live_cell_ratio)
 {
