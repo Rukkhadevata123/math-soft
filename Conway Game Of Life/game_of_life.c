@@ -73,6 +73,9 @@ void load_rle(const char *filename)
     }
 
     char line[1024];
+    int width = 0, height = 0;
+    int x = 0, y = 0;
+
     while (fgets(line, sizeof(line), file))
     {
         if (line[0] == '#')
@@ -83,7 +86,6 @@ void load_rle(const char *filename)
         else if (line[0] == 'x')
         {
             // 解析宽度和高度
-            int width, height;
             sscanf(line, "x = %d, y = %d", &width, &height);
 
             // 重新初始化世界
@@ -92,22 +94,32 @@ void load_rle(const char *filename)
         else
         {
             // 解析模式
-            int x = 0, y = 0;
+            int count = 0;
             for (char *p = line; *p; p++)
             {
-                if (*p == 'b')
+                if (*p >= '0' && *p <= '9')
                 {
-                    x++;
+                    count = count * 10 + (*p - '0');
+                }
+                else if (*p == 'b')
+                {
+                    x += count ? count : 1;
+                    count = 0;
                 }
                 else if (*p == 'o')
                 {
-                    world[y][x] = 1;
-                    x++;
+                    for (int i = 0; i < (count ? count : 1); i++)
+                    {
+                        world[y][x + i] = 1;
+                    }
+                    x += count ? count : 1;
+                    count = 0;
                 }
                 else if (*p == '$')
                 {
-                    y++;
+                    y += count ? count : 1;
                     x = 0;
+                    count = 0;
                 }
             }
         }
