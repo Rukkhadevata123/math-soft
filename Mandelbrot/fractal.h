@@ -32,3 +32,4 @@ typedef struct {
 #pragma pack(pop)
 
 int mandelbrot(double real, double imag);
+void color_map(int value, RGBTRIPLE* color);

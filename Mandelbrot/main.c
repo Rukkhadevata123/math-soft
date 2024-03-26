@@ -4,8 +4,8 @@
 #include "fractal.h"
 
 int main() {
-    int width = 1024;
-    int height = 1024;
+    int width = 12288;
+    int height = 12288;
 
     BITMAPFILEHEADER bfh = {0x4D42, 54 + width * height * 3, 0, 0, 54};
     BITMAPINFOHEADER bih = {40, width, height, 1, 24, 0, width * height * 3, 0, 0, 0, 0};
@@ -16,9 +16,7 @@ int main() {
             double real = (x - width / 2.0) * 4.0 / width;
             double imag = (y - height / 2.0) * 4.0 / height;
             int value = mandelbrot(real, imag);
-            image[y * width + x].rgbRed = value % 8 * 32;
-            image[y * width + x].rgbGreen = value % 16 * 16;
-            image[y * width + x].rgbBlue = value % 32 * 8;
+            color_map(value, &image[y * width + x]); // 使用颜色映射函数
         }
     }
 
