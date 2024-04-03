@@ -1,6 +1,7 @@
 // main.c
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "fractal.h"
 
 int main(int argc, char *argv[])
@@ -14,9 +15,9 @@ int main(int argc, char *argv[])
     int width = atoi(argv[1]);
     int height = atoi(argv[2]);
     int num_images = atoi(argv[3]);
-    double zoom_factor = 0.1;   // 每次放大的因子
-    double center_real = -0.75; // 视图中心的实部
-    double center_imag = 0.1;   // 视图中心的虚部
+    double zoom_factor = 0.05;   // 每次放大的因子
+    double center_real = -1.5; // 视图中心的实部
+    double center_imag = 0.0;   // 视图中心的虚部
 
     for (int i = 0; i < num_images; i++)
     {
@@ -28,8 +29,8 @@ int main(int argc, char *argv[])
         {
             for (int x = 0; x < width; x++)
             {
-                double real = (x - width / 2.0) * 4.0 / (width * (1 + zoom_factor * i)) + center_real;
-                double imag = (y - height / 2.0) * 4.0 / (height * (1 + zoom_factor * i)) + center_imag;
+                double real = (x - width / 2.0) * 4.0 / (width * pow(1 + zoom_factor, i)) + center_real;
+                double imag = (y - height / 2.0) * 4.0 / (height * pow(1 + zoom_factor, i)) + center_imag;
                 int value = mandelbrot(real, imag);
                 color_map(value, &image[y * width + x]); // 使用颜色映射函数
             }

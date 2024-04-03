@@ -12,13 +12,13 @@ main: $(OBJS)
 	$(CC) -c $(CFLAGS) $< -o $@
 
 input.png: main
-	./main 1024 1024 10
+	./main 1024 1024 630
 	for file in mandelbrot_*.bmp; do \
 		convert "$$file" "$${file%.bmp}.png"; \
 	done
 
 output.mp4: input.png
-	ffmpeg -framerate 60 -i mandelbrot_%03d.png -c:v libx264 -profile:v high -crf 18 -pix_fmt yuv420p output.mp4
+	ffmpeg -framerate 45 -i mandelbrot_%03d.png -c:v libx264 -profile:v high -crf 18 -pix_fmt yuv420p output.mp4
 
 clean:
 	rm -f *.o main *.bmp *.png output.mp4
