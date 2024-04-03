@@ -3,7 +3,7 @@
 #include <math.h>
 
 int mandelbrot(double real, double imag) {
-    int max_iter = 1000; // 增加迭代次数以增加复杂性
+    int max_iter = 5000; // 增加迭代次数以增加复杂性
     double r = 0.0;
     double i = 0.0;
     int n = 0;
