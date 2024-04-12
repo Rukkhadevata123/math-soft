@@ -1,8 +1,8 @@
-// fractal.h
 #pragma once
 
 #pragma pack(push, 1)
-typedef struct {
+typedef struct
+{
     unsigned short bfType;
     unsigned int bfSize;
     unsigned short bfReserved1;
@@ -10,7 +10,8 @@ typedef struct {
     unsigned int bfOffBits;
 } BITMAPFILEHEADER;
 
-typedef struct {
+typedef struct
+{
     unsigned int biSize;
     int biWidth;
     int biHeight;
@@ -24,7 +25,8 @@ typedef struct {
     unsigned int biClrImportant;
 } BITMAPINFOHEADER;
 
-typedef struct {
+typedef struct
+{
     unsigned char rgbBlue;
     unsigned char rgbGreen;
     unsigned char rgbRed;
@@ -32,4 +34,4 @@ typedef struct {
 #pragma pack(pop)
 
 int mandelbrot(double real, double imag);
-void color_map(int value, RGBTRIPLE* color);
+void color_map(int value, RGBTRIPLE *color);

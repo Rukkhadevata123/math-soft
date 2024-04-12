@@ -12,7 +12,8 @@ int WIDTH;
 int HEIGHT;
 
 #pragma pack(push, 1)
-typedef struct {
+typedef struct
+{
     uint16_t bfType;
     uint32_t bfSize;
     uint16_t bfReserved1;
@@ -20,7 +21,8 @@ typedef struct {
     uint32_t bfOffBits;
 } BITMAPFILEHEADER;
 
-typedef struct {
+typedef struct
+{
     uint32_t biSize;
     int32_t biWidth;
     int32_t biHeight;
@@ -35,9 +37,11 @@ typedef struct {
 } BITMAPINFOHEADER;
 #pragma pack(pop)
 
-void save_to_bmp(const char *filename) {
+void save_to_bmp(const char *filename)
+{
     FILE *file = fopen(filename, "wb");
-    if (!file) {
+    if (!file)
+    {
         printf("无法打开文件 %s\n", filename);
         return;
     }
@@ -51,8 +55,10 @@ void save_to_bmp(const char *filename) {
     fwrite(&fileHeader, sizeof(fileHeader), 1, file);
     fwrite(&infoHeader, sizeof(infoHeader), 1, file);
 
-    for (int i = 0; i < HEIGHT; i++) {
-        for (int j = 0; j < WIDTH; j++) {
+    for (int i = 0; i < HEIGHT; i++)
+    {
+        for (int j = 0; j < WIDTH; j++)
+        {
             uint8_t color = world[i][j] ? 0 : 255;
             fwrite(&color, 1, 1, file); // Blue
             fwrite(&color, 1, 1, file); // Green
@@ -174,11 +180,9 @@ void load_txt(const char *filename)
 
 void convert_rle_to_txt(const char *input_filename, const char *output_filename)
 {
-
 }
 void convert_txt_to_rle(const char *input_filename, const char *output_filename)
 {
-
 }
 // 初始化格子世界的状态
 void initialize(int width, int height, float live_cell_ratio)

@@ -5,7 +5,8 @@
 #include "game_of_life.h"
 #include "game_of_life.c"
 
-int kbhit(void) {
+int kbhit(void)
+{
     struct termios oldt, newt;
     int ch;
     int oldf;
@@ -22,7 +23,8 @@ int kbhit(void) {
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     fcntl(STDIN_FILENO, F_SETFL, oldf);
 
-    if(ch != EOF) {
+    if (ch != EOF)
+    {
         ungetc(ch, stdin);
         return 1;
     }
@@ -53,9 +55,11 @@ int main()
         update();
         delay(delay_time);
 
-        if (kbhit()) {
+        if (kbhit())
+        {
             char ch = getchar();
-            if (ch == 's') {
+            if (ch == 's')
+            {
                 save_to_bmp("game_of_life.bmp");
             }
         }

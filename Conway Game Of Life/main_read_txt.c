@@ -5,7 +5,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-int kbhit(void) {
+int kbhit(void)
+{
     struct termios oldt, newt;
     int ch;
     int oldf;
@@ -22,7 +23,8 @@ int kbhit(void) {
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     fcntl(STDIN_FILENO, F_SETFL, oldf);
 
-    if(ch != EOF) {
+    if (ch != EOF)
+    {
         ungetc(ch, stdin);
         return 1;
     }
@@ -32,7 +34,7 @@ int kbhit(void) {
 
 int main()
 {
-    load_rle("gosperglidergun.rle");
+    load_txt("gosperglidergun.txt");
     while (1)
     {
         print_world();

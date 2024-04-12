@@ -24,7 +24,7 @@
 
 你可以使用以下命令来运行测试用例：
 
-```
+```bash
 go run three_methods.go time_maintest.go -size=640 -density=0.1 -sparse=true -blockSize=8
 ```
 

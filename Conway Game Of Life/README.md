@@ -85,8 +85,30 @@
 
 用户需要在命令行中提供一个模式名称作为参数来运行程序。例如，如果用户想要初始化一个 Lightweight Spaceship 模式，他们可以运行以下命令：
 
+```bash
+gcc -o main main_special_modes.c
+./main LightweightSpaceship
 ```
-./main2 LightweightSpaceship
+
+或者，如果用户需要在命令行观看程序的输出，则输入命令：
+
+```bash
+gcc -o main main_command_line.c 
+./main
 ```
+
+输入示例：
+
+ > 请输入画布的宽度：70
+
+ > 请输入画布的高度：70
+
+ > 请输入细胞存活率（0-1）：0.6
+
+ > 请输入迭代次数：1000
+
+ > 请输入每次更新的延迟时间（毫秒）：100
+
+如果用户需要转换rle或txt文件，确保本目录下有同名文件时，替换上面的`main main_command_line.c`为`main_read_rle.c`或`main_read_txt.c`即可
 
 在程序运行期间，用户可以按 's' 键来保存当前的世界状态到一个 BMP 文件中。例如，如果用户在运行程序后按 's' 键，程序将会保存当前的世界状态到一个名为 "game_of_life.bmp" 的文件中。

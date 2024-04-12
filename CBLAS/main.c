@@ -50,7 +50,6 @@ void manual_dgemm2(int n, double *A, double *B, double *C)
     }
 }
 
-
 int main()
 {
     int i, j;

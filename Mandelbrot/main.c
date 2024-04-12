@@ -1,4 +1,3 @@
-// main.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -15,9 +14,9 @@ int main(int argc, char *argv[])
     int width = atoi(argv[1]);
     int height = atoi(argv[2]);
     int num_images = atoi(argv[3]);
-    double zoom_factor = 0.05;   // 每次放大的因子
+    double zoom_factor = 0.05; // 每次放大的因子
     double center_real = -1.5; // 视图中心的实部
-    double center_imag = 0.0;   // 视图中心的虚部
+    double center_imag = 0.0;  // 视图中心的虚部
 
     for (int i = 0; i < num_images; i++)
     {

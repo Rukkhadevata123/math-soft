@@ -150,7 +150,7 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     最后向 /etc/locale.conf 导入内容
     "echo 'LANG=en_US.UTF-8'  > /etc/locale.conf"
 
-    注：如果需要设置中文（不推荐），请在进入系统桌面后手动编辑/etc/locale.conf文件，并输入如下内容
+    注：如果需要设置中文（不推荐以下的操作），请在进入系统桌面后手动编辑/etc/locale.conf文件，并输入如下内容
     LANG=en_US.UTF-8
     LANG=zh_CN.UTF-8
     LC_CTYPE="zh_CN.UTF-8"
@@ -161,7 +161,7 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     LC_MESSAGES="zh_CN.UTF-8"
     export LC_ALL="zh_CN.UTF-8"
 
-    参见“简体中文本地化wiki”：
+    建议的操作：参见“简体中文本地化wiki”：
     https://wiki.archlinuxcn.org/wiki/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%E6%9C%AC%E5%9C%B0%E5%8C%96#
 
 十七、设置主机名
@@ -205,7 +205,7 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
 
     若 win10 安装在另一个硬盘中则不会输出 可在进入系统后挂载硬盘并重新执行该命令
 二十二、安装桌面环境（KDE）
-    "pacman -S xorg plasma plasma-wayland-session kde-applications"
+    "pacman -S xorg plasma kde-applications"
     "pacman -S sddm"
     "systemctl enable sddm.service"
     （"systemctl enable sddm"）
@@ -247,14 +247,17 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     "sudo pacman -S appstream-qt appstream archlinux-appstream-data packagekit-qt5 fwupd"
 二十七、安装基本、常用软件（如果遇到网络连接问题，请在后文启用全局代理再进行尝试）
     "sudo pacman -S sof-firmware alsa-firmware alsa-ucm-conf" # 声音固件
+    "sudo pacman -S power-profiles-daemon" #电源管理方案
+    "sudo pacman -S phonon-qt5-vlc" #vlc后端
     "sudo pacman -S wget"
     "sudo pacman -S firewalld" #防火墙配置
+    "sudo systemctl enable --now firewalld.service" #启动服务
+    "sudo pacman -Syu libxcrypt-compat" #libso库
     "sudo pacman -S adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts noto-fonts-cjk wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-jetbrains-mono-nerd ttf-arphic-uming" # 安装几个开源中文字体。一般装上文泉驿就能解决大多 wine 应用中文方块的问题
     "sudo pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra" # 安装谷歌开源字体及表情
     "sudo pacman -S firefox chromium google-chrome" # 安装常用的火狐、chromium（可选）、谷歌浏览器
     "sudo pacman -S yay" #AUR助手
     "yay -S octopi" #图形化软件包管理器
-    "sudo pacman -S latte-dock" #美化Dock栏
     "sudo pacman -S sshfs" #自动挂载KDE Connect手机分区
     "yay -S kholidays5-cn" #节假日插件
     "sudo pacman -S libreoffice-still libreoffice-still-zh-cn" #办公软件（如需使用尝鲜版，把still改成fresh即可）
@@ -264,6 +267,7 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     "sudo pacman -S motrix" #下载工具
     "yay -S dropbox" #dropbox网盘
     "yay -S linuxqq" #安装QQ
+    "yay -S redshift" #安装夜间模式
     "yay -S microsoft-edge-stable" #Edge浏览器
     "sudo pacman -S kio-admin" #添加右键菜单”以管理员身份运行“
     "sudo pacman -S gparted" #分区工具
@@ -272,14 +276,18 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     "sudo pacman -S python-pip" #python的pip安装器
     "yay -S dh-autoreconf"
     "sudo pacman -S git openssh openssl"
+    "sudo pacman -S git-lfs"
+    "git lfs install"
+    "yay -S github-desktop-bin" 
     "sudo pacman -S timeshift" #安装备份还原工具
+    "yay -S alsa-utils" #声音组件
     "sudo pacman -S neofetch lolcat"
     "yay -S rar"
     尝试在终端输入
     "neofetch | lolcat"
     "sudo pacman -S blender" #Blender 是一款开源免费的三维图形图像软件，提供从建模、动画、材质、渲染、到音频处理、视频剪辑等一系列动画短片制作解决方案。
     "sudo pacman -S musescore" #MuseScore 是 Muse Group 开发的一个跨平台的自由开源制谱软件。
-    "yay -S com.qq.weixin.spark" #安装微信
+    "yay -S com.qq.weixin.spark"/"yay -S wechat-uos-bwrap" #安装微信
     "yay -S obs-studio-browser" #有浏览器插件集成的 OBS Studio。编译要很久（大约 15 min）
     "yay -S obs-nvfbc-git" #如果想进一步优化直播或录制性能，可以安装此仓库中的 NvFBC 显卡驱动补丁，再安装OBS NvFBC 插件aur，然后使用 NvFBC 来源即可。
     "yay -S listen1-desktop-appimage yesplaymusic qqmusic-electron" #几个在线音乐软件
@@ -302,6 +310,8 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     （"sudo pacman -S wine-gecko wine-mono wine-nine wine-staging winetricks") #建议运行上面一条指令而不是这条指令来安装wine
 
     wiki关于游戏的介绍：https://wiki.archlinuxcn.org/wiki/%E6%B8%B8%E6%88%8F
+
+    Tex Live相关：https://wiki.archlinuxcn.org/wiki/TeX_Live
 
 二十九、安装输入法https://wiki.archlinuxcn.org/wiki/Fcitx5
     "sudo pacman -S fcitx5-im" # 输入法基础包组
