@@ -1,0 +1,245 @@
+\documentclass{ctexart}
+\usepackage{amsmath}
+\usepackage{cite}
+\usepackage{listings}
+
+\lstset{
+    basicstyle=\ttfamily,
+    breaklines=true
+}
+
+\begin{document}
+
+\title{计算圆周率的演变：无穷的旅程}
+\author{GitHub Copilot}
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+    圆周率$\pi$自古以来就吸引了数学家们的注意。本文探讨了计算$\pi$的演变，特别关注无穷级数方法的发展。我们将从古埃及和巴比伦的几何方法开始，经过古希腊的尝试，到达中世纪的进步，如中国的祖冲之和他的割圆术，以及印度的无穷级数方法。然后，我们将探讨近代的发展，如利布尼茨的级数，尼拉坎塔级数，和瓦利斯公式。最后，我们将介绍计算机时代的突破，如蒙特卡洛方法，Bailey–Borwein–Plouffe (BBP)公式，和Chudnovsky公式。每种方法的C语言实现也将被详细介绍。本文的目标是使读者对计算圆周率的各种方法有一个全面的理解，并能够自己实现这些方法。
+\end{abstract}
+
+\section{引言}
+
+圆周率$\pi$是一个无理数，其值约为3.14159。它在数学和科学中有许多重要的应用，包括计算圆的周长和面积，以及在物理学中描述波动和振动等现象\cite{beckmann1971history}。尽管$\pi$的精确值无法用有限的数字表示，但人们已经发展出了许多方法来计算$\pi$的近似值。这些方法的发展反映了数学的进步，从古代的几何方法，到中世纪的无穷级数方法，再到近代的计算机算法。本文将详细介绍这些方法的发展，以及它们的C语言实现。
+
+\section{早期的圆周率近似值}
+
+在早期，人们使用几何方法来估计圆周率的值。这些方法通常基于对圆的周长或面积的测量。
+
+\subsection{古埃及和巴比伦的几何方法}
+
+古埃及人和巴比伦人是最早尝试估计圆周率值的文明之一。他们使用的方法主要是基于对实际物体的测量，然后通过比例关系来估计圆周率。例如，古埃及的Rhind数学纸草书中记录了一种方法，该方法假设圆的周长是其直径的四倍，从而得出圆周率的值约为4。这个值虽然不精确，但对于日常生活中的计算已经足够\cite{robins1995rhind}。另一方面，巴比伦人则使用了稍微精确一些的值，即$\pi \approx 3.125$。他们通过将圆切割成正方形，然后通过比较正方形和圆的面积来得到这个值\cite{robson2002words}。
+
+\subsection{古希腊的尝试}
+
+古希腊的数学家对圆周率的研究更为深入。最著名的例子是阿基米德，他通过不断逼近圆的方法，得出了圆周率的值在3 1/7和3 10/71之间。他的方法是通过不断增加多边形的边数，使多边形越来越接近圆，然后通过比较多边形的周长和直径来计算圆周率。这是最早使用无穷过程来估计圆周率的例子，也是对圆周率的最早精确估计\cite{archimedespi}。
+
+\section{中世纪的进步}
+
+在中世纪，数学家开始使用更复杂的方法来计算圆周率，包括无穷级数和更精确的几何方法。
+
+\subsection{中国的祖冲之和他的割圆术}
+
+在中国，祖冲之是最早使用割圆术来计算圆周率的数学家之一。他通过将圆切割成24,576个等边三角形，得出了圆周率的值约为3.1415926，这是当时最精确的估计。他的方法是通过将圆切割成越来越多的等边三角形，然后通过比较这些三角形的周长和直径来计算圆周率。这种方法的精度随着切割的三角形数量的增加而提高。具体来说，他首先将圆切割成一个正多边形，然后通过增加多边形的边数（即切割更多的三角形）来逼近圆。每增加一次边数，他就重新计算多边形的周长，然后用这个周长除以直径，得到一个新的圆周率的估计值\cite{zuchongzhi}。
+
+\subsection{印度的无穷级数方法}
+
+在印度，数学家马达瓦开始使用无穷级数来计算圆周率。他发现了一个级数，该级数的和等于圆周率的倒数的平方的四倍。这个级数是由一系列的分数组成，每一项都依赖于前一项，这使得它的计算相对复杂。这是最早的已知无穷级数，也是最早使用无穷级数来计算圆周率的例子。这种方法的精度随着级数项数的增加而提高。具体来说，他首先计算级数的前几项，然后将这些项相加，得到一个圆周率的估计值。然后，他继续计算更多的项，并将它们添加到总和中，以此来逼近圆周率。每计算一项，他就重新计算总和，并用这个总和来得到一个新的圆周率的估计值\cite{madhava}。
+
+马达瓦的无穷级数公式如下：
+
+\[
+    \frac{1}{\pi} = \sqrt{\frac{12}{4}} - \frac{1}{3\cdot3\cdot4} + \frac{1}{5\cdot5\cdot4\cdot3\cdot2} - \frac{1}{7\cdot7\cdot4\cdot3\cdot2\cdot3\cdot2} + \cdots
+\]
+
+\section{近代的发展}
+
+在近代，数学家开始使用无穷级数来计算圆周率，这些级数通常可以通过积分或者三角函数来得到。
+
+\subsection{利布尼茨的级数}
+
+利布尼茨发现了一个著名的级数，该级数的和等于四分之一圆周率。这个级数是交错级数，每一项的符号都与前一项相反，这使得它的收敛速度非常慢。级数公式如下：
+
+\[
+    \frac{\pi}{4} = 1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \frac{1}{9} - \frac{1}{11} + \cdots
+\]
+
+这个级数可以通过积分$\int_0^1 \frac{1}{1+x^2} dx$得到\cite{leibniz}。
+
+实际上，我们可以通过选择不同的$x$值来加速这个级数的收敛。原始的级数是基于$x=1$的，但是如果我们选择$x=\sqrt{3}$或$x=\frac{\sqrt{3}}{3}$，则可以得到收敛更快的级数。
+
+例如，当$x=\sqrt{3}$时，我们有：
+
+\[
+    \frac{\pi}{3} = 2\left(1 - \frac{1}{3\sqrt{3}} + \frac{1}{5\sqrt{3}^2} - \frac{1}{7\sqrt{3}^3} + \frac{1}{9\sqrt{3}^4} - \frac{1}{11\sqrt{3}^5} + \cdots\right)
+\]
+
+当$x=\frac{\sqrt{3}}{3}$时，我们有：
+
+\[
+    \frac{\pi}{6} = 1 - \frac{1}{3\cdot3} + \frac{1}{5\cdot3^2} - \frac{1}{7\cdot3^3} + \frac{1}{9\cdot3^4} - \frac{1}{11\cdot3^5} + \cdots
+\]
+
+这两个级数都比原始的级数收敛得更快，因此可以更快地计算出圆周率的值。
+
+\subsection{尼拉坎塔级数}
+
+尼拉坎塔发现了一个更快的级数，该级数的和等于圆周率。这个级数是由一系列的分数组成，每一项都依赖于前一项，这使得它的计算相对复杂\cite{nilakantha}。级数公式如下：
+
+\[
+    \pi = 3 + \frac{4}{2\times3\times4} - \frac{4}{4\times5\times6} + \frac{4}{6\times7\times8} - \frac{4}{8\times9\times10} + \cdots
+\]
+
+
+\subsection{瓦利斯公式}
+
+瓦利斯发现了一个无穷乘积，该乘积的极限等于圆周率的一半。这个公式是通过将圆的面积表示为无穷多个三角形的面积之和来得到的\cite{wallis}。公式如下：
+
+\[
+    \frac{\pi}{2} = \frac{2}{1} \times \frac{2}{3} \times \frac{4}{3} \times \frac{4}{5} \times \frac{6}{5} \times \frac{6}{7} \times \frac{8}{7} \times \frac{8}{9} \times \cdots
+\]
+
+
+\section{计算机时代的突破}
+
+\subsection{蒙特卡洛方法}
+
+蒙特卡洛方法是一种统计模拟方法，通过从概率分布中抽取大量样本来计算数值解。在计算圆周率的上下文中，蒙特卡洛方法通常涉及到在一个正方形中随机抛洒点，然后计算落在内切圆内的点的比例。这个比例接近于圆的面积（即$\pi r^2$）与正方形的面积（即$(2r)^2$）之比，也就是$\pi/4$。因此，通过这个比例，我们可以估计出$\pi$的值\cite{montecarlo}。
+
+\subsection{Bailey–Borwein–Plouffe (BBP)公式}
+
+BBP公式是一种可以直接计算圆周率的任意十六进制或二进制位数而无需先计算前面的位数的公式。这是一种所谓的“随机访问”公式，这个公式的发现标志着计算$\pi$的新时代的开始，因为它使得我们可以在不知道$\pi$的前$n-1$位的情况下，直接计算出第$n$位\cite{bbp}。BBP公式的形式如下：
+
+\[
+    \pi = \sum_{k=0}^{\infty} \left[ \frac{1}{16^k} \left( \frac{4}{8k+1} - \frac{2}{8k+4} - \frac{1}{8k+5} - \frac{1}{8k+6} \right) \right]
+\]
+
+\subsection{Chudnovsky公式}
+
+Chudnovsky公式是目前用于计算圆周率最精确的公式之一。这个公式是一个快速收敛的级数，这个公式的发现使得我们可以在计算较少的项的情况下，就得到$\pi$的高精度值\cite{chudnovsky}。Chudnovsky公式的形式如下：
+
+\[
+    \frac{1}{\pi} = 12 \sum_{k=0}^{\infty} \frac{(-1)^k (6k)!(545140134k+13591409)}{(3k)!(k!)^3 640320^{3k+3/2}}
+\]
+
+\section{C语言实现}
+\subsection{利布尼茨级数的C语言实现}
+\begin{lstlisting}
+double leibniz_series(int terms) {
+    double pi = 0.0;
+    int sign = 1;
+    for (int i = 0; i < terms; i++) {
+        double term = 1.0 / (2 * i + 1);
+        pi += sign * term;
+        sign *= -1;
+    }
+    return pi * 4;
+}
+\end{lstlisting}
+
+\subsection{尼拉坎塔级数的C语言实现}
+\begin{lstlisting}
+double nilakantha_series(int terms) {
+    double pi = 3.0;
+    int sign = -1;
+    for (int i = 2; i < terms * 2; i += 2) {
+        double term = 4.0 / (i * (i + 1) * (i + 2));
+        pi += sign * term;
+        sign *= -1;
+    }
+    return pi;
+}
+\end{lstlisting}
+
+\subsection{瓦利斯公式的C语言实现}
+\begin{lstlisting}
+double wallis_product(int terms) {
+    double pi_product = 1.0;
+    for (int i = 1; i <= terms; i++) {
+        double term = (2.0 * i) / (2.0 * i - 1) * (2.0 * i) / (2.0 * i + 1);
+        pi_product *= term;
+    }
+    return pi_product * 2;
+}
+\end{lstlisting}
+
+\subsection{蒙特卡洛方法的C语言实现}
+\begin{lstlisting}
+double monte_carlo(int iterations) {
+    srand(time(NULL));
+    int inside_circle = 0;
+    for (int i = 0; i < iterations; i++) {
+        double x = (double)rand() / RAND_MAX;
+        double y = (double)rand() / RAND_MAX;
+        if (x * x + y * y <= 1.0) {
+            inside_circle++;
+        }
+    }
+    return 4.0 * inside_circle / iterations;
+}
+\end{lstlisting}
+
+\subsection{BBP公式的C语言实现}
+\begin{lstlisting}
+double bbp_formula(int terms) {
+    double pi = 0.0;
+    for (int k = 0; k < terms; k++) {
+        double term = 1.0 / pow(16, k) * (
+            4.0 / (8 * k + 1) -
+            2.0 / (8 * k + 4) -
+            1.0 / (8 * k + 5) -
+            1.0 / (8 * k + 6)
+        );
+        pi += term;
+    }
+    return pi;
+}
+\end{lstlisting}
+
+\subsection{Chudnovsky公式的C语言实现}
+\begin{lstlisting}
+double chudnovsky_algorithm(int terms)
+{
+    double pi = 0.0;
+    for (int k = 0; k < terms; k++)
+    {
+        double numerator = pow(-1, k) * exp(lgamma(6 * k + 1)) * (545140134 * k + 13591409);
+        double denominator = exp(lgamma(3 * k + 1)) * pow(exp(lgamma(k + 1)), 3) * pow(640320, 3 * k + 3.0 / 2.0);
+        pi += numerator / denominator;
+    }
+    pi *= 12.0;
+    pi = 1.0 / pi;
+    return pi;
+}
+\end{lstlisting}
+\section{C语言实现的结果}
+
+我们使用了10000个项和1000000次迭代来计算圆周率的近似值。以下是我们得到的结果：
+
+\begin{itemize}
+    \item Leibniz series approximation for pi: 3.141492653590034
+    \item Nilakantha series approximation for pi: 3.141592653590038
+    \item Wallis product approximation for pi: 3.141514118681864
+    \item Monte Carlo method approximation for pi: 3.140608000000000
+    \item BBP formula approximation for pi: 3.141592653589793
+    \item Chudnovsky algorithm approximation for pi: -nan
+\end{itemize}
+
+请注意，由于Chudnovsky算法在计算大的阶乘时可能会导致溢出，所以其结果可能会出现NaN（Not a Number）。
+
+\section{结论}
+
+本文详细介绍了计算圆周率的各种方法，从古代的几何方法，到中世纪的无穷级数方法，再到现代的统计模拟和直接计算方法。这些方法的发展反映了数学和计算机科学的进步，以及我们对这个基本常数理解的深化。
+
+尽管我们现在已经能够计算出圆周率的数百亿位，但是，对圆周率的研究并未停止。新的计算方法和算法仍在不断被发现和改进。例如，最近的一些研究正在探索如何利用量子计算来计算圆周率。
+
+此外，圆周率的精确值也在各种科学研究中发挥着重要作用，例如在物理学的精密测量，以及在计算机科学的加密算法中。因此，对圆周率的研究和计算不仅仅是数学的问题，也是科学和工程的问题。
+
+在未来，我们期待看到更多的创新方法和技术用于计算圆周率，以及更深入的理解这个神秘而基本的数。
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

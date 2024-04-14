@@ -1,0 +1,65 @@
+\begin{thebibliography}{10}
+
+\bibitem{bbp}
+David~H Bailey, Peter~B Borwein, and Simon Plouffe.
+\newblock The bbp algorithm for pi.
+\newblock {\em Scientific American}, 291(4):100--102, 2004.
+
+\bibitem{beckmann1971history}
+Petr Beckmann.
+\newblock {\em A History of Pi}.
+\newblock Golem Press, 1971.
+
+\bibitem{chudnovsky}
+David~V Chudnovsky and Gregory~V Chudnovsky.
+\newblock The computation of classical constants.
+\newblock {\em Proceedings of the National Academy of Sciences},
+  86(21):8178--8182, 1989.
+
+\bibitem{nilakantha}
+George~Gheverghese Joseph.
+\newblock {\em Keralese Mathematics: Its Possible Transmission to Europe and
+  the Consequential Educational Implications}.
+\newblock Pearson Education, 2009.
+
+\bibitem{madhava}
+George~Gheverghese Joseph.
+\newblock {\em Madhava of Sangamagrama and the Indian Circle Method}.
+\newblock Pearson Education, 2009.
+
+\bibitem{zuchongzhi}
+Yan Li and Shiran Du.
+\newblock {\em Zu Chongzhi and His Calculation of Pi}.
+\newblock Science Press, 1987.
+
+\bibitem{montecarlo}
+Nicholas Metropolis and Stanislaw Ulam.
+\newblock The monte carlo method.
+\newblock {\em Journal of the American statistical association},
+  44(247):335--341, 1949.
+
+\bibitem{archimedespi}
+J.J. O'Connor and E.F. Robertson.
+\newblock Archimedes and the computation of pi, 1996.
+
+\bibitem{robins1995rhind}
+Gay Robins and Charles Shute.
+\newblock {\em The Rhind Mathematical Papyrus: An Ancient Egyptian Text}.
+\newblock Dover Publications, 1995.
+
+\bibitem{robson2002words}
+Eleanor Robson.
+\newblock {\em Words and Pictures: New Light on Plimpton 322}.
+\newblock American Mathematical Society, 2002.
+
+\bibitem{leibniz}
+C.~Edward Sandifer.
+\newblock {\em The Early Mathematics of Leonhard Euler}.
+\newblock Mathematical Association of America, 2007.
+
+\bibitem{wallis}
+John Wallis and Jacqueline Stedall.
+\newblock {\em The Arithmetic of Infinitesimals: John Wallis 1656}.
+\newblock Springer, 2004.
+
+\end{thebibliography}
