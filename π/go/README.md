@@ -14,7 +14,7 @@
 你可以通过以下方式运行这个程序：
 
 ```bash
-go run Viète's formula.go -i 300 -p 500
+go run Viète\'s\ formula.go -i 300 -p 500 >> output.txt 
 ```
 
 这将会计算 π 的值，迭代次数为300，精度为500位小数。
