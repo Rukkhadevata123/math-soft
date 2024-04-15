@@ -2,7 +2,7 @@
 
 这个程序使用了韦达公式来计算 π 的值。韦达公式是一个无穷乘积公式，可以用来计算 π 的值。公式如下：
 
-![formula](https://latex.codecogs.com/gif.latex?%5Cfrac%7B2%7D%7B%5Cpi%7D%20%3D%20%5Cfrac%7B%5Csqrt%7B2%7D%7D%7B2%7D%20%5Ccdot%20%5Cfrac%7B%5Csqrt%7B2%20&plus;%20%5Csqrt%7B2%7D%7D%7D%7B2%7D%20%5Ccdot%20%5Cfrac%7B%5Csqrt%7B2%20&plus;%20%5Csqrt%7B2%20&plus;%20%5Csqrt%7B2%7D%7D%7D%7D%7B2%7D%20%5Ccdot%20%5Ccdots)
+![formula](pi.svg)
 
 ## 程序用法
 
