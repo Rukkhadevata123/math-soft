@@ -1,0 +1,37 @@
+\begin{thebibliography}{1}
+
+\bibitem{holzinger2018machine}
+Andreas Holzinger, Georg Langs, Helmut Denk, Kurt Zatloukal, and Heimo
+  M{\"u}ller.
+\newblock Machine learning for health informatics: state-of-the-art and future
+  challenges.
+\newblock In {\em Machine Learning for Health Informatics}, pages 271--293.
+  Springer, 2018.
+
+\bibitem{knuth1981art}
+Donald~E. Knuth.
+\newblock {\em The Art of Computer Programming, Volume 2: Seminumerical
+  Algorithms}.
+\newblock Addison-Wesley, 1981.
+
+\bibitem{lecuyer1999uniform}
+Pierre L'Ecuyer.
+\newblock Uniform random number generation.
+\newblock {\em Annals of Operations Research}, 86:213--233, 1994.
+
+\bibitem{menezes2018handbook}
+Alfred~J Menezes, Paul~C van Oorschot, and Scott~A Vanstone.
+\newblock {\em Handbook of Applied Cryptography}.
+\newblock CRC press, 2018.
+
+\bibitem{owen2003survey}
+Art~B Owen.
+\newblock A survey of quasi-random point sequences.
+\newblock {\em ACM SIGSAM Bulletin}, 37(2):20--29, 2003.
+
+\bibitem{robert2004monte}
+Christian~P Robert and George Casella.
+\newblock {\em Monte Carlo methods}.
+\newblock Springer, 2004.
+
+\end{thebibliography}

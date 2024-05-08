@@ -99,7 +99,7 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     挂载 EFI系统分区到/efi， 然后再挂载一个“拓展引导加载器分区”（XBOOTLDR）分区到 /boot。在以前创建的 ESP 太小而无法容纳多个引导加载程序以及内核但 ESP 又无法轻松调整大小时（例如在 Windows 之后将 Linux 安装到 双引导（多引导） 时），这可能非常有用。至少在 systemd-boot#使用XBOOTLDR安装 时支持此方法。
 
     注意：
-    /efi是/boot/efi的替代挂载点[5]，/boot/efi在过去被使用但现在不推荐。
+    /efi是/boot/efi的替代挂载点，/boot/efi在过去被使用但现在不推荐。
     /efi在安装一开始时不存在，需要先用 mkdir(1) 创建再挂载EFI系统分区到该目录。
 
     在挂载时，挂载是有顺序的，先挂载根分区，再挂载 EFI 分区。 这里的 sdax 只是例子，具体根据你自身的实际分区情况来。
@@ -247,13 +247,16 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     "sudo pacman -S appstream-qt appstream archlinux-appstream-data packagekit-qt5 fwupd"
 二十七、安装基本、常用软件（如果遇到网络连接问题，请在后文启用全局代理再进行尝试）
     "sudo pacman -S sof-firmware alsa-firmware alsa-ucm-conf" # 声音固件
+    "sudo pacman -S p7zip unrar unarchiver lzop lrzip" #压缩软件ark的依赖
     "sudo pacman -S power-profiles-daemon" #电源管理方案
     "sudo pacman -S phonon-qt5-vlc" #vlc后端
-    "sudo pacman -S wget"
+    "sudo pacman -S wget go bind "
+    "yay -S codelldb"
+    "sudo pacman -Ss geogebra" #画图软件
     "sudo pacman -S firewalld" #防火墙配置
     "sudo systemctl enable --now firewalld.service" #启动服务
     "sudo pacman -Syu libxcrypt-compat" #libso库
-    "sudo pacman -S adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts noto-fonts-cjk wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-jetbrains-mono-nerd ttf-arphic-uming" # 安装几个开源中文字体。一般装上文泉驿就能解决大多 wine 应用中文方块的问题
+    "sudo pacman -S adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts noto-fonts-cjk wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-jetbrains-mono-nerd ttf-arphic-uming ttf-indic-otf gnu-free-fonts" # 安装几个开源中文字体。一般装上文泉驿就能解决大多 wine 应用中文方块的问题
     "sudo pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji noto-fonts-extra" # 安装谷歌开源字体及表情
     "sudo pacman -S firefox chromium google-chrome" # 安装常用的火狐、chromium（可选）、谷歌浏览器
     "sudo pacman -S yay" #AUR助手
@@ -282,12 +285,11 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     "sudo pacman -S timeshift" #安装备份还原工具
     "yay -S alsa-utils" #声音组件
     "sudo pacman -S neofetch lolcat"
-    "yay -S rar"
     尝试在终端输入
     "neofetch | lolcat"
     "sudo pacman -S blender" #Blender 是一款开源免费的三维图形图像软件，提供从建模、动画、材质、渲染、到音频处理、视频剪辑等一系列动画短片制作解决方案。
     "sudo pacman -S musescore" #MuseScore 是 Muse Group 开发的一个跨平台的自由开源制谱软件。
-    "yay -S com.qq.weixin.spark"/"yay -S wechat-uos-bwrap" #安装微信
+    "yay -S com.qq.weixin.spark"/"yay -S wechat-universal-bwrap" #安装微信
     "yay -S obs-studio-browser" #有浏览器插件集成的 OBS Studio。编译要很久（大约 15 min）
     "yay -S obs-nvfbc-git" #如果想进一步优化直播或录制性能，可以安装此仓库中的 NvFBC 显卡驱动补丁，再安装OBS NvFBC 插件aur，然后使用 NvFBC 来源即可。
     "yay -S listen1-desktop-appimage yesplaymusic qqmusic-electron" #几个在线音乐软件
@@ -295,18 +297,18 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     "sudo pacman -S steam" #Steam游戏平台
     "yay -S protonup-qt" #运行windows游戏
     "sudo pacman -S meson systemd git dbus libinih gamemode lib32-gamemode" #安装游戏模式，配置请参见https://wiki.archlinuxcn.org/wiki/Gamemode
-    " yay -S visual-studio-code-bin" #安装vscode
+    "yay -S visual-studio-code-bin" #安装vscode
     "yay -S appimagelauncher" #安装appimage相关
     "sudo pacman -S jdk17-openjdk" #安装java
-    "yay -S prismlauncher" #安装Minecraft启动器
+    "yay -S prismlauncher" #安装Minecraft启动器(请到官网下载appimage版本)
     VirtualBox相关：请参考https://wiki.archlinuxcn.org/wiki/VirtualBox
+
     vmware相关:请参考https://wiki.archlinuxcn.org/wiki/VMware
-    "sudo pacman -S wine wine-mono wine_gecko wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls \
-    mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error \
-    lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo \
-    sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama \
-    ncurses lib32-ncurses opencl-icd-loader lib32-opencl-icd-loader libxslt lib32-libxslt libva lib32-libva gtk3 \
-    lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader" #安装wine（Wine 是类 UNIX 系统下运行 Windows 程序的“兼容层”，是正在持续开发中的自由软件。在 Wine 中运行的 Windows 程序，就如同运行原生 Linux 程序一样，不会有模拟器那样的严重性能问题。）
+    yay -S vmware-workstation
+    sudo systemctl enable --now vmware-usbarbitrator.service
+    sudo systemctl enable --now vmware-networks.service
+
+    "sudo pacman -S wine-mono wine_gecko wine-staging giflib lib32-giflib libpng lib32-libpng libldap lib32-libldap gnutls lib32-gnutls mpg123 lib32-mpg123 openal lib32-openal v4l-utils lib32-v4l-utils libpulse lib32-libpulse libgpg-error lib32-libgpg-error alsa-plugins lib32-alsa-plugins alsa-lib lib32-alsa-lib libjpeg-turbo lib32-libjpeg-turbo sqlite lib32-sqlite libxcomposite lib32-libxcomposite libxinerama lib32-libgcrypt libgcrypt lib32-libxinerama ncurses lib32-ncurses opencl-icd-loader lib32-opencl-icd-loader libxslt lib32-libxslt libva lib32-libva gtk3 lib32-gtk3 gst-plugins-base-libs lib32-gst-plugins-base-libs vulkan-icd-loader lib32-vulkan-icd-loader" #安装wine（Wine 是类 UNIX 系统下运行 Windows 程序的“兼容层”，是正在持续开发中的自由软件。在 Wine 中运行的 Windows 程序，就如同运行原生 Linux 程序一样，不会有模拟器那样的严重性能问题。）
     （"sudo pacman -S wine-gecko wine-mono wine-nine wine-staging winetricks") #建议运行上面一条指令而不是这条指令来安装wine
 
     wiki关于游戏的介绍：https://wiki.archlinuxcn.org/wiki/%E6%B8%B8%E6%88%8F
@@ -317,7 +319,7 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     "sudo pacman -S fcitx5-im" # 输入法基础包组
     "sudo pacman -S fcitx5-chinese-addons" # 官方中文输入引擎
     "sudo pacman -S fcitx5-rime" # Rime输入引擎
-    "yay fcitx5-pinyin-moegirl" # 萌娘百科词库。二刺猿必备（archlinuxcn）
+    "yay -S fcitx5-pinyin-moegirl" # 萌娘百科词库。二刺猿必备（archlinuxcn）
     "sudo pacman -S fcitx5-material-color" # 输入法主题
     "sudo pacman -S fcitx5-pinyin-zhwiki" #中文维基百科词库
     "yay -S fcitx5-input-support"
@@ -351,7 +353,7 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     "sudo pacman -S cuda cuda-tools" #安装cuda
     "sudo nvidia-xconfig" #可选，生成配置文件
     "sudo pacman -S glmark2" #可选，显卡跑分软件
-    "yay -S lib32-vkd3d vkd3d dxvk-bin" #可选，也许跟wine有关
+    "yay -S lib32-vkd3d vkd3d dxvk-bin" #可选，跟wine有关
 
     AMD：
     "sudo pacman -S --needed lib32-mesa vulkan-radeon lib32-vulkan-radeon vulkan-icd-loader lib32-vulkan-icd-loader"
@@ -359,9 +361,9 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     Intel:
     "sudo pacman -S --needed lib32-mesa vulkan-intel lib32-vulkan-intel vulkan-icd-loader lib32-vulkan-icd-loader"
 
-    "sudo grub-mkconfig -o /boot/grub/grub.cfg" #保险起见，请务必再次生成grub配置文件
+    "sudo grub-mkconfig -o /boot/grub/grub.cfg" #再次生成grub配置文件
 
-    重启，之后可以在设置里调整屏幕刷新率，分辨率等等
+    重启，之后可以在设置里调整屏幕刷新率，分辨率，设置夜间模式等等
 三十三、必要配置
     以空会话启动
     默认情况下，KDE 桌面环境中关机之后再开机会恢复先前保存的对话（如浏览器没有关掉，那么开机之后浏览器还在）。
@@ -377,8 +379,11 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     将 点击文件或文件夹时 的选项改为 选中它们
     点击 应用 保存设置
 
+    Dophin可以设置为启动时固定打开家目录
+
     安装 Windows 字体
     "yay -S ttf-ms-fonts"
+    "yay -S svn ttf-mac-fonts" #可能无效
     或者
     进入 Windows 的 Fonts 文件夹，将字体复制到建立的文件夹并设置合理的权限：
     "cd /path/to/C:/Windows/Fonts" # 或者通过 Dolphin 在此文件夹下右键 > 点击 打开终端
@@ -399,10 +404,11 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
 三十五、更新系统并重启（每天执行）
     "yay -Syu"
     "reboot"
-    定期清理软件包缓存：
+    定期清理软件包缓存，删除孤立软件包：
     "yay -Sc"
     "yay -clean"
     "sudo pacman -Sc"
+    "sudo pacman -Qtdq | sudo pacman -Rns - "
 三十六、系统美化
     请参阅开头参考链接
     GRUB主题推荐"https://store.kde.org/p/1760905"
@@ -411,6 +417,18 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
 yay别名：alias yays='yay --noconfirm && yay -clean --noconfirm && yay -Sc --noconfirm && sudo pacman -Sc --noconfirm && sudo reboot'
 开机自动挂载windows分区：/etc/fstab添加：UUID=A28C9FD48C9FA179 /run/media/Yoimiya/Data ntfs-3g defaults,uid=1000,gid=1000,windows_names,umask=0000 0 0
 
+manjaro换源：sudo pacman-mirrors -i -c China -m rank
+manjaro安装显卡： sudo mhwd -a pci nonfree 0300
+https://wiki.manjaro.org/index.php/Configure_Graphics_Cards/zh-cn
+manjaro解决vlc闪退：yay -R libva-vdpau-driver xf86-video-intel xf86-video-nouveau
+yay -S libva-nvidia-driver
+manjaro缺少：base-devel，linux-headers,gdb
+manjaro设置交换空间：fstab（UUID用gparted查看）：UUID=7aba6c76-ca96-4812-b20c-ab20c3fbe483 none swap defaults 0 0
+双显卡环境变量：__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME="nvidia" __VK_LAYER_NV_optimus="NVIDIA_only" %command%
+
+配置默认编辑器为vim："EDITOR=vim sudoedit /etc/profile" 加入export EDITOR='vim',再source一下
+
+独显运行:prime-run %command%
 
 
 
