@@ -1,0 +1,23 @@
+\begin{thebibliography}{1}
+
+\bibitem{Goodfellow-et-al-2016}
+Ian Goodfellow, Yoshua Bengio, and Aaron Courville.
+\newblock {\em Deep Learning}.
+\newblock MIT Press, 2016.
+
+\bibitem{Haykin2009}
+Simon Haykin.
+\newblock {\em Neural Networks and Learning Machines}.
+\newblock Pearson Education, 2009.
+
+\bibitem{LeCun1998}
+Y.~LeCun, L.~Bottou, Y.~Bengio, and P.~Haffner.
+\newblock Gradient-based learning applied to document recognition.
+\newblock {\em Proceedings of the IEEE}, 86(11):2278--2324, 1998.
+
+\bibitem{Rumelhart1986}
+David~E. Rumelhart, Geoffrey~E. Hinton, and Ronald~J. Williams.
+\newblock Learning representations by back-propagating errors.
+\newblock {\em Nature}, 323:533--536, 1986.
+
+\end{thebibliography}
