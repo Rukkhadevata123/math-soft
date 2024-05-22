@@ -28,7 +28,18 @@ int main() {
     double learning_rate = 0.1;  // 学习率
 
     adagrad optimizer;  // 使用Adagrad优化器
-    net.train<cross_entropy>(optimizer, train_images, train_labels, batch_size, epochs);
+
+    // 添加回调函数，每个epoch结束后打印损失和准确率
+    net.train<cross_entropy>(optimizer, train_images, train_labels, batch_size, epochs,
+        // 每个epoch
+        []() {},
+        // 每个mini-batch
+        []() {},
+        // 每个epoch结束后
+        [&]() {
+            result res = net.test(test_images, test_labels);
+            std::cout << "epoch ended: " << net.epoch() << " loss: " << net.get_loss<cross_entropy>() << " accuracy: " << res.accuracy() << std::endl;
+        });
 
     // 保存模型
     net.save("model");
