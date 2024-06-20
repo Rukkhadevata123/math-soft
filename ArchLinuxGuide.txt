@@ -282,6 +282,7 @@ https://wiki.archlinuxcn.org/wiki/Arch_%2B_Windows_%E5%8F%8C%E7%B3%BB%E7%BB%9F#
     "sudo pacman -S git-lfs"
     "git lfs install"
     "yay -S github-desktop-bin" 
+    "yay -S fsearch" #文件搜索工具
     "sudo pacman -S timeshift" #安装备份还原工具
     "yay -S alsa-utils" #声音组件
     "sudo pacman -S neofetch lolcat"
